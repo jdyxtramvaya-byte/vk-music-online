@@ -37,9 +37,9 @@ const tracksData=[
 {id:4,title:'Между городами',artist:'Демо-артист',mood:'В дороге',duration:231,colors:palette[3]},
 {id:5,title:'После дождя',artist:'Демо-артист',mood:'Спокойный вечер',duration:196,colors:palette[4]},
 {id:6,title:'Первый свет',artist:'Демо-артист',mood:'Для настроения',duration:207,colors:palette[5]}];
+const $=id=>document.getElementById(id);
 let current=null,playing=false,elapsed=0,timer=null,view='home',filter='',shuffle=false,repeat=false; const audio=$('audio'); let importedId=100; const objectUrls=[];
 let favorites=new Set(JSON.parse(localStorage.getItem('vkmo-favorites')||'[]')); const importedTracks=[];
-const $=id=>document.getElementById(id);
 function cover(colors,small=false){return '<div class="'+(small?'mini-cover':'cover')+'" style="--c1:'+colors[0]+';--c2:'+colors[1]+'">'+svg('music')+'</div>'}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.add('hidden'),2800)}
 function fmt(s){return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')}
