@@ -60,7 +60,7 @@ document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click'
 $('search').addEventListener('input',()=>{if($('search').value)view='search';renderTracks()});
 $('play').addEventListener('click',()=>{if(!current)return selectTrack(importedTracks[0]?.id||1);playing=!playing;if(current.audioUrl){if(playing)audio.play().catch(()=>{playing=false;updatePlayer()});else audio.pause();}updatePlayer();if(playing&&!current.audioUrl)toast('Демо-трек без аудиофайла. Добавь свою музыку.')});
 $('import-music').addEventListener('click',()=>$('audio-files').click());
-$('audio-files').addEventListener('change',e=>{const files=Array.from(e.target.files||[]).filter(f=>f.type.startsWith('audio/'));if(!files.length)return;files.forEach(file=>{const url=URL.createObjectURL(file);objectUrls.push(url);const name=file.name.replace(/\\.[^.]+$/,'');importedTracks.push({id:importedId++,title:name||'Моя музыка',artist:'Локальный файл',mood:'Моя музыка',duration:0,colors:palette[(importedTracks.length+1)%palette.length],audioUrl:url});});view='home';filter='';renderTracks();toast('Добавлено файлов: '+files.length+'. Музыка доступна только в этом браузере.');e.target.value='';});
+$('audio-files').addEventListener('change',e=>{const files=Array.from(e.target.files||[]).filter(f=>f.type.startsWith('audio/'));if(!files.length)return;files.forEach(file=>{const url=URL.createObjectURL(file);objectUrls.push(url);const name=file.name.replace(/\.[^.]+$/,'');importedTracks.push({id:importedId++,title:name||'Моя музыка',artist:'Локальный файл',mood:'Моя музыка',duration:0,colors:palette[(importedTracks.length+1)%palette.length],audioUrl:url});});view='home';filter='';renderTracks();toast('Добавлено файлов: '+files.length+'. Музыка доступна только в этом браузере.');e.target.value='';});
 audio.addEventListener('loadedmetadata',()=>{if(current&&current.audioUrl){current.duration=audio.duration||0;updatePlayer()}});
 audio.addEventListener('ended',()=>{if(!repeat)nextTrack(1);else{audio.currentTime=0;audio.play()}});
 audio.addEventListener('play',()=>{playing=true;updatePlayer()});audio.addEventListener('pause',()=>{if(current&&current.audioUrl){playing=false;updatePlayer()}});
@@ -75,7 +75,7 @@ $('vk-connect').addEventListener('click',()=>{vkModal.classList.remove('hidden')
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).classList.add('hidden')));
 [vkModal,lyricsModal].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden')}));
 $('vk-docs').addEventListener('click',()=>window.open('https://id.vk.com/about/business/go','_blank','noopener'));
-$('vk-save').addEventListener('click',()=>{const id=$('vk-app-id').value.trim();if(!/^\\d{4,12}$/.test(id)){toast('Укажи корректный ID приложения VK ID');return}localStorage.setItem('vkmo-vk-app-id',id);$('vk-status').textContent='ID сохранён. Следующий этап — настроить redirect URL и обработку OAuth-ответа. Получение аудиозаписей VK не гарантируется одним фактом авторизации.';toast('ID приложения сохранён')});
+$('vk-save').addEventListener('click',()=>{const id=$('vk-app-id').value.trim();if(!/^\d{4,12}$/.test(id)){toast('Укажи корректный ID приложения VK ID');return}localStorage.setItem('vkmo-vk-app-id',id);$('vk-status').textContent='ID сохранён. Следующий этап — настроить redirect URL и обработку OAuth-ответа. Получение аудиозаписей VK не гарантируется одним фактом авторизации.';toast('ID приложения сохранён')});
 async function openLyrics(){
  if(!current){toast('Сначала выбери трек');return}
  lyricsModal.classList.remove('hidden');$('lyrics-title').textContent=current.title;$('lyrics-meta').textContent=current.artist+' · LRCLIB';$('lyrics-content').textContent='Ищу текст песни…';
@@ -89,7 +89,7 @@ async function openLyrics(){
   const item=data.find(x=>x.plainLyrics||x.syncedLyrics)||data[0];
   $('lyrics-title').textContent=item.trackName||current.title;
   $('lyrics-meta').textContent=(item.artistName||current.artist)+(item.albumName?' · '+item.albumName:'')+(item.hasWordSync?' · синхронизация слов':'');
-  $('lyrics-content').textContent=item.plainLyrics||((item.syncedLyrics||'').replace(/\\[\\d{2}:\\d{2}\\.\\d{2}\\]/g,'').trim())||'Для этой записи текст не опубликован.';
+  $('lyrics-content').textContent=item.plainLyrics||((item.syncedLyrics||'').replace(/\[\d{2}:\d{2}\.\d{2}\]/g,'').trim())||'Для этой записи текст не опубликован.';
  }catch(err){$('lyrics-content').textContent=err.message||'Не удалось загрузить текст.'}
 }
 $('lyrics-open').addEventListener('click',openLyrics);
